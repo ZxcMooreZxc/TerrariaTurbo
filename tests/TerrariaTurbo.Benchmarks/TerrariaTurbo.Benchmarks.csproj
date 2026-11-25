@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <TerrariaDir Condition="'$(TerrariaDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Terraria</TerrariaDir>
+    <XnaDir Condition="'$(XnaDir)' == ''">C:\Users\5000elo\.gemini\antigravity\brain\41227058-874b-4804-b6ae-7138763fe81b\scratch\xna_refs\Program Files\Microsoft XNA\XNA Game Studio</XnaDir>
+    <ExtractedReLogic>$(MSBuildProjectDirectory)\obj\ReLogic.dll</ExtractedReLogic>
+  </PropertyGroup>
+
+  <Target Name="ExtractReLogicFromTerraria" BeforeTargets="ResolveAssemblyReferences" Condition="!Exists('$(ExtractedReLogic)')">
+    <MakeDir Directories="$(MSBuildProjectDirectory)\obj" />
+    <Exec Command="powershell -NoProfile -Command &quot;$asm=[System.Reflection.Assembly]::ReflectionOnlyLoadFrom('$(TerrariaDir)\Terraria.exe'); $s=$asm.GetManifestResourceStream('Terraria.Libraries.ReLogic.ReLogic.dll'); $fs=[System.IO.File]::Create('$(ExtractedReLogic)'); $s.CopyTo($fs); $fs.Dispose(); $s.Dispose()&quot;" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="Lib.Harmony" Version="2.3.3" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TerrariaTurbo\TerrariaTurbo.csproj" />
+    <Reference Include="Terraria">
+      <HintPath>$(TerrariaDir)\Terraria.exe</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="ReLogic">
+      <HintPath>$(ExtractedReLogic)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework">
+      <HintPath>$(XnaDir)\Microsoft.Xna.Framework.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Game">
+      <HintPath>$(XnaDir)\Microsoft.Xna.Framework.Game.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Graphics">
+      <HintPath>$(XnaDir)\Microsoft.Xna.Framework.Graphics.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>
